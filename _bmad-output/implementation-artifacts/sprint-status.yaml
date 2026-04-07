@@ -1,0 +1,100 @@
+# generated: 2026-04-08
+# last_updated: 2026-04-08
+# project: Outvier EdTech Dashboard
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+
+generated: 2026-04-08
+last_updated: 2026-04-08
+project: Outvier EdTech Dashboard
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # Epic 1: Project Setup & Foundation
+  epic-1: backlog
+  1-1-initialize-next-js-project: backlog
+  1-2-create-clean-architecture-folder-structure: backlog
+  1-3-configure-react-query-and-api-setup: backlog
+  1-4-set-up-typescript-strict-mode-and-validation: backlog
+  1-5-configure-vercel-deployment: backlog
+  1-6-set-up-development-tools-eslint-prettier-git: backlog
+  epic-1-retrospective: optional
+
+  # Epic 2: University Discovery & Comparison
+  epic-2: backlog
+  2-1-university-data-model-and-seed-data: backlog
+  2-2-budget-filter-implementation: backlog
+  2-3-country-region-filter-implementation: backlog
+  2-4-ranking-tier-filter-implementation: backlog
+  2-5-side-by-side-comparison-view: backlog
+  2-6-university-detail-view: backlog
+  epic-2-retrospective: optional
+
+  # Epic 3: AI-Powered Recommendations
+  epic-3: backlog
+  3-1-student-profile-input-form: backlog
+  3-2-profile-to-university-matching-algorithm: backlog
+  3-3-alternative-university-suggestions: backlog
+  3-4-roi-calculation-display: backlog
+  3-5-scholarship-eligible-recommendations: backlog
+  epic-3-retrospective: optional
+
+  # Epic 4: Data Visualization
+  epic-4: backlog
+  4-1-d3-js-roi-comparison-chart: backlog
+  4-2-break-even-timeline-visualization: backlog
+  4-3-real-time-chart-updates: backlog
+  epic-4-retrospective: optional
+
+  # Epic 5: User Management
+  epic-5: backlog
+  5-1-guest-mode-access: backlog
+  5-2-google-oauth-authentication: backlog
+  5-3-magic-link-email-authentication: backlog
+  5-4-save-comparisons-feature: backlog
+  5-5-user-profile-management: backlog
+  5-6-gdpr-export-data: backlog
+  5-7-gdpr-delete-account: backlog
+  epic-5-retrospective: optional
+
+  # Epic 6: Admin & Compliance
+  epic-6: backlog
+  6-1-admin-data-verification-dashboard: backlog
+  6-2-approve-reject-university-data: backlog
+  6-3-audit-timestamp-version-history: backlog
+  6-4-data-rollback-capability: backlog
+  6-5-pdf-report-generation: backlog
+  6-6-tamper-proof-pdf-verification: backlog
+  6-7-simplified-finance-view-for-parents: backlog
+  6-8-share-comparisons-via-link: backlog
+  6-9-cookie-consent-implementation: backlog
+  6-10-data-dispute-reporting: backlog
+  6-11-48-hour-dispute-resolution: backlog
+  6-12-data-freshness-indicators: backlog
+  6-13-ai-disclaimer-display: backlog
+  epic-6-retrospective: optional
