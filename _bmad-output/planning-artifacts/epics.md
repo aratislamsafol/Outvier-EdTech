@@ -3,9 +3,11 @@ stepsCompleted: [1, 2, 3, 4]
 inputDocuments: ["_bmad-output/planning-artifacts/prd.md", "_bmad-output/planning-artifacts/architecture.md"]
 workflowStatus: 'complete'
 completedAt: '2026-04-08'
----
+revisedAt: '2026-04-08'
+revisedReason: 'Updated to Node/Express backend architecture'
+project_name: 'Eligible Student'
 
-# Outvier EdTech Dashboard - Epic Breakdown
+# Eligible Student - Epic Breakdown
 
 ## Overview
 
@@ -96,12 +98,14 @@ This document provides the complete epic and story breakdown for Outvier EdTech 
 
 ### Additional Requirements (Architecture)
 
-- AR1: Initialize project with create-next-app (TypeScript, Tailwind, App Router)
-- AR2: Implement Clean Architecture folder structure (Domain/Application/Infrastructure/Presentation)
-- AR3: Set up React Query for data fetching (no global state)
-- AR4: Configure REST API routes in Next.js
-- AR5: Set up Vercel deployment with auto-scaling
-- AR6: Implement TypeScript strict mode with domain type guards
+- AR1: Initialize Next.js frontend with create-next-app (TypeScript, Tailwind, App Router)
+- AR2: Initialize Node/Express backend (port 3001)
+- AR3: Implement Clean Architecture folder structure (Domain/Application/Infrastructure in server/)
+- AR4: Set up React Query for data fetching (calls Express backend API)
+- AR5: Configure Express REST API routes (server/src/routes/)
+- AR6: Set up CORS for frontend-backend communication
+- AR7: Set up Vercel deployment for frontend, Railway/Render for backend
+- AR8: Implement TypeScript strict mode with domain type guards
 
 ### UX Design Requirements
 
@@ -164,8 +168,8 @@ None found - UX design document not available.
 ## Epic List
 
 ### Epic 1: Project Setup & Foundation
-Initialize the development environment with all required tooling and architecture patterns.
-**FRs covered:** AR1, AR2, AR3, AR4, AR5, AR6
+Initialize the development environment with all required tooling and architecture patterns (Next.js frontend + Node/Express backend).
+**FRs covered:** AR1, AR2, AR3, AR4, AR5, AR6, AR7, AR8
 
 ### Epic 2: University Discovery & Comparison
 Enable students to discover and compare universities based on their criteria.
@@ -189,12 +193,12 @@ Manage data verification, reporting, and regulatory compliance.
 
 ## Epic 1: Project Setup & Foundation
 
-Initialize the development environment with all required tooling and architecture patterns.
-**FRs covered:** AR1, AR2, AR3, AR4, AR5, AR6
+Initialize the development environment with all required tooling and architecture patterns (Next.js frontend + Node/Express backend).
+**FRs covered:** AR1, AR2, AR3, AR4, AR5, AR6, AR7, AR8
 
-### Story 1.1: Initialize Next.js Project
+### Story 1.1: Initialize Next.js Frontend
 
-As a Developer, I want to initialize a Next.js project with TypeScript, Tailwind, and ESLint, so that I have a modern, type-safe foundation for development.
+As a Developer, I want to initialize a Next.js project with TypeScript, Tailwind, and ESLint, so that I have a modern, type-safe frontend foundation.
 
 **Acceptance Criteria:**
 
@@ -203,42 +207,60 @@ As a Developer, I want to initialize a Next.js project with TypeScript, Tailwind
 **Then** a Next.js project is created with TypeScript, Tailwind, and App Router enabled
 **And** the project compiles without errors
 
-### Story 1.2: Create Clean Architecture Folder Structure
+### Story 1.2: Initialize Node/Express Backend
 
-As a Developer, I want to set up the Clean Architecture folder structure (Domain/Application/Infrastructure/Presentation), so that the codebase follows the zero-dependency domain principle.
+As a Developer, I want to initialize a Node.js + Express backend server, so that API logic is separate from the frontend.
 
 **Acceptance Criteria:**
 
-**Given** the Next.js project initialized
-**When** I create the folders `src/domain`, `src/application`, `src/infrastructure`, `src/presentation`, `src/lib`
+**Given** the Next.js frontend created
+**When** I create a `server/` folder with `npm init` and install express, mongoose, cors, dotenv, helmet
+**Then** an Express server runs on port 3001
+**And** CORS is configured to allow frontend (localhost:3000) requests
+
+### Story 1.3: Create Clean Architecture Folder Structure
+
+As a Developer, I want to set up the Clean Architecture folder structure in the server/, so that the codebase follows the zero-dependency domain principle.
+
+**Acceptance Criteria:**
+
+**Given** the Express backend initialized
+**When** I create folders `server/src/domain`, `server/src/application`, `server/src/infrastructure`, `server/src/routes`
 **Then** the folder structure matches the architecture document
 **And** each layer has appropriate subdirectories
 
-### Story 1.3: Configure React Query and API Setup
+### Story 1.4: Configure React Query and API Integration
 
-As a Developer, I want to configure React Query for data fetching and set up REST API route structure, so that the application can fetch and cache data efficiently.
+As a Developer, I want to configure React Query for data fetching from the Express backend, so that the frontend can fetch and cache data efficiently.
 
 **Acceptance Criteria:**
 
-**Given** the Clean Architecture structure in place
+**Given** both frontend and backend initialized
 **When** I install and configure React Query (TanStack Query)
-**Then** React Query provider wraps the application
-**And** API routes follow REST conventions in `src/app/api/`
+**Then** React Query provider wraps the Next.js application
+**And** API calls go to `http://localhost:3001/api/` endpoints
 
-### Story 1.4: Set Up TypeScript Strict Mode and Validation
+### Story 1.5: Set Up TypeScript Strict Mode and Validation
 
-As a Developer, I want to enable TypeScript strict mode and create domain type guards, so that the Domain Layer has zero dependencies and tamper-proof validation.
+As a Developer, I want to enable TypeScript strict mode and create domain type guards in the backend, so that the Domain Layer has zero dependencies and tamper-proof validation.
 
 **Acceptance Criteria:**
 
 **Given** the project setup
-**When** I enable strict mode in tsconfig.json and create domain type guards
+**When** I enable strict mode in tsconfig.json and create domain type guards in server/src/domain
 **Then** TypeScript enforces strict type checking
 **And** domain entities use pure TypeScript validation (no external libraries)
 
-### Story 1.5: Configure Vercel Deployment
+### Story 1.6: Configure Deployment
 
-As a Developer, I want to configure the project for Vercel deployment with auto-scaling, so that the application meets the 99.9% uptime NFR.
+As a Developer, I want to configure the project for deployment, so that the application meets the 99.9% uptime NFR.
+
+**Acceptance Criteria:**
+
+**Given** the project setup
+**When** I configure Vercel for frontend deployment and Railway/Render for backend deployment
+**Then** both services can be deployed independently
+**And** environment variables are properly configured
 
 **Acceptance Criteria:**
 

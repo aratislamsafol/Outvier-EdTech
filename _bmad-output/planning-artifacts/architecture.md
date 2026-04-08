@@ -4,13 +4,17 @@ workflowType: 'architecture'
 lastStep: 8
 status: 'complete'
 completedAt: '2026-04-08'
-project_name: 'Outvier EdTech Dashboard'
+revisedAt: '2026-04-08'
+revisedReason: 'Changed to Node/Express backend per user request'
+project_name: 'Eligible Student'
 user_name: 'Arat'
 date: '2026-04-08'
 inputDocuments: ["_bmad-output/planning-artifacts/prd.md"]
 ---
 
 # Architecture Decision Document
+
+_Revised: 2026-04-08 - Now using Node/Express backend with Next.js frontend_
 
 _This document builds collaboratively through step-by-step discovery. Sections are appended as we work through each architectural decision together._
 
@@ -40,41 +44,47 @@ _This document builds collaboratively through step-by-step discovery. Sections a
 | **Clean Architecture** | Domain/Application/Infrastructure layers with zero-dependency core |
 | **Real-time D3.js** | Client-side visualization with SSR backbone |
 | **GDPR Compliance** | exportData() / deleteAccount() built into Domain |
-| **Hybrid Auth** | NextAuth.js with guest mode support |
+| **Hybrid Auth** | Passport.js with guest mode support |
 | **Data Pipeline** | Scraped → Pending → Human Verify → Production |
+| **Separate Backend** | Node/Express API server (port 3001), Next.js frontend (port 3000) |
 
 ### Scale Assessment
 
 | Indicator | Value |
 |-----------|-------|
 | **Complexity** | Moderate to High |
-| **Primary Domain** | Full-stack Web (Next.js + D3.js) |
-| **Architectural Components** | ~8-10 major |
+| **Primary Domain** | Full-stack Web (Next.js Frontend + Node/Express Backend) |
+| **Architectural Components** | ~10-12 major (2 separate servers) |
 | **Cross-cutting** | Security, Performance, i18n, Accessibility |
 
 ## Starter Template Evaluation
 
 ### Primary Technology Domain
 
-Full-stack Web Application (Next.js + D3.js) based on PRD requirements
+Full-stack Web Application with **separate frontend and backend**:
+- **Frontend:** Next.js 16 (App Router)
+- **Backend:** Node.js + Express.js
+- **Database:** MongoDB
 
 ### Starter Options Considered
 
 | Option | Pros | Cons |
 |--------|------|------|
-| **create-next-app + Custom** | Full control, Clean Architecture, No noisy code | More setup work |
-| **Next Turbo Kit** | Production-ready auth included | May have unnecessary bloat |
-| **T3 Stack** | Type-safe, modern stack | Opinionated, may conflict with Clean Architecture |
+| **Monolith Next.js** | Simple, one server | Less scalable, tight coupling |
+| **Separate Backend** | Scalable, independent deploy, clear separation | More setup, 2 servers to manage |
+| **tRPC + Next.js** | Type-safe, modern | More opinionated |
 
-### Selected Starter: create-next-app + Custom Clean Architecture
+### Selected Architecture: Next.js (Frontend) + Node/Express (Backend)
 
 **Rationale:**
-- Your "No Noisy Code" policy requires full control over structure
-- Zero-dependency Domain Layer needs custom folder structure
-- Clean Architecture layers (Domain/Application/Infrastructure) don't fit boilerplate patterns
+- Backend independence allows scaling frontend/backend separately
+- Clear separation of concerns with Clean Architecture
+- Express.js is battle-tested for REST APIs
+- Frontend can be deployed to Vercel, backend to Render/Railway/Fly.io
 
-**Initialization Command:**
+**Initialization Commands:**
 
+Frontend (Next.js):
 ```bash
 npx create-next-app@latest outvier \
   --typescript \
@@ -85,21 +95,28 @@ npx create-next-app@latest outvier \
   --import-alias "@/*"
 ```
 
-Then structure folders:
+Backend (Node/Express):
+```bash
+mkdir server && cd server
+npm init -y
+npm install express mongoose cors dotenv
+npm install -D typescript @types/node @types/express tsx
 ```
-src/
-├── domain/           # Enterprise rules (zero dependencies)
-├── application/      # Use cases, ports, DTOs
-├── infrastructure/   # External: MongoDB, AI API, scrapers
-├── presentation/    # UI: React components, D3.js, pages
-└── lib/             # Shared: DI, types, utilities
+
+**Folder Structure:**
+```
+project/
+├── outvier/          # Next.js frontend (port 3000)
+└── server/           # Node/Express backend (port 3001)
 ```
 
 **Architectural Decisions Provided:**
 
 - **Language:** TypeScript (strict mode)
 - **Styling:** Tailwind CSS (minimal, utility-first)
-- **Build:** Next.js 14/15 App Router
+- **Frontend:** Next.js 16 App Router
+- **Backend:** Node.js + Express.js (separate server, port 3001)
+- **API Communication:** REST with fetch/axios from Next.js to Express
 - **Testing:** To be added (Vitest + React Testing Library)
 - **Code Organization:** Clean Architecture layers
 
@@ -133,31 +150,39 @@ src/
 
 ### Authentication & Security
 
-- **Auth:** NextAuth.js (Google OAuth + Magic Links)
+- **Auth:** Passport.js (Google OAuth + Magic Links)
 - **Authorization:** Role-based (Guest, User, Admin)
-- **Security Middleware:** Next.js built-in + rate limiting
+- **Security Middleware:** Express.js built-in + express-rate-limit
 - **Domain Security:** Zero-dependency domain, type guards prevent malicious input
+- **CORS:** Configured for frontend (localhost:3000) → backend (localhost:3001)
 
 ### API & Communication Patterns
 
-- **Design:** REST API Routes (Next.js)
+- **Design:** REST API (Express.js)
+- **Backend Location:** `server/` folder, port 3001
+- **Frontend Location:** `outvier/` folder, port 3000
 - **Documentation:** OpenAPI/Swagger (post-MVP)
 - **Error Handling:** Standard error response format
-- **Rate Limiting:** Per-route, configured in middleware
+- **Rate Limiting:** express-rate-limit package
+- **CORS:** Enabled for frontend-backend communication
 
 ### Frontend Architecture
 
-- **State:** React Query (no global store)
+- **Framework:** Next.js 16 (App Router)
+- **State:** React Query (calls backend API at localhost:3001)
 - **Components:** Atomic design pattern
 - **Routing:** Next.js App Router
 - **Performance:** React Query caching, D3.js direct DOM manipulation
 - **Accessibility:** Radix UI for accessibility primitives
+- **API Calls:** Use fetch/axios to Express backend
 
 ### Infrastructure & Deployment
 
-- **Hosting:** Vercel (auto-scaling, edge network)
-- **CI/CD:** Vercel automatic deploys
-- **Environment:** Vercel environment variables
+- **Frontend Hosting:** Vercel (Next.js)
+- **Backend Hosting:** Render/Railway/Fly.io (Node.js)
+- **Database:** MongoDB Atlas
+- **CI/CD:** Vercel for frontend, Railway/Render for backend
+- **Environment:** Separate .env files for frontend and backend
 - **Monitoring:** Vercel Analytics (post-MVP: Sentry)
 
 ## Implementation Patterns
@@ -260,122 +285,116 @@ src/
 ### Complete Project Directory Structure
 
 ```
-outvier/
-├── README.md
-├── package.json
-├── next.config.js
-├── tailwind.config.ts
-├── tsconfig.json
-├── postcss.config.js
-├── .env.local
-├── .env.example
-├── .gitignore
-├── .eslintrc.json
-├── .prettierrc
+eligible_student/
+├── outvier/                      # Next.js Frontend (port 3000)
+│   ├── README.md
+│   ├── package.json
+│   ├── next.config.js
+│   ├── tailwind.config.ts
+│   ├── tsconfig.json
+│   ├── .env.local
+│   ├── .env.example
+│   ├── .gitignore
+│   │
+│   └── src/
+│       ├── app/                 # Next.js App Router
+│       │   ├── layout.tsx
+│       │   ├── page.tsx
+│       │   └── globals.css
+│       │
+│       ├── domain/              # Shared Types (frontend)
+│       │   └── types/
+│       │
+│       ├── presentation/       # UI Layer
+│       │   ├── components/
+│       │   │   ├── ui/
+│       │   │   ├── charts/     # D3.js
+│       │   │   └── features/
+│       │   └── hooks/          # React Query hooks calling backend API
+│       │
+│       └── lib/                 # Shared utilities
 │
-├── src/
-│   ├── app/                       # Next.js App Router
-│   │   ├── layout.tsx
-│   │   ├── page.tsx
-│   │   ├── globals.css
-│   │   ├── api/                   # REST API Routes
-│   │   │   ├── universities/route.ts
-│   │   │   ├── comparisons/route.ts
-│   │   │   ├── auth/[...nextauth]/route.ts
-│   │   │   └── users/route.ts
+├── server/                      # Node/Express Backend (port 3001)
+│   ├── package.json
+│   ├── tsconfig.json
+│   ├── .env
+│   ├── .gitignore
 │   │
-│   ├── domain/                    # Enterprise Business Rules (ZERO deps)
-│   │   ├── entities/
-│   │   │   ├── University.ts
-│   │   │   ├── User.ts
-│   │   │   ├── Comparison.ts
-│   │   │   └── Program.ts
-│   │   ├── value-objects/
-│   │   │   ├── Tuition.ts
-│   │   │   ├── ROI.ts
-│   │   │   ├── Ranking.ts
-│   │   │   └── Budget.ts
-│   │   └── types/index.ts
-│   │
-│   ├── application/               # Application Business Rules
-│   │   ├── use-cases/
-│   │   │   ├── CompareUniversities.ts
-│   │   │   ├── GetRecommendations.ts
-│   │   │   ├── CalculateROI.ts
-│   │   │   ├── ExportPDF.ts
-│   │   │   └── SaveComparison.ts
-│   │   ├── ports/
-│   │   │   ├── IUniversityRepository.ts
-│   │   │   ├── IUserRepository.ts
-│   │   │   ├── IAIRecommendationService.ts
-│   │   │   └── IPDFGenerator.ts
-│   │   ├── dto/
-│   │   └── services/ComparisonService.ts
-│   │
-│   ├── infrastructure/            # External Concerns
-│   │   ├── persistence/mongodb/
-│   │   │   ├── UniversityRepository.ts
-│   │   │   ├── UserRepository.ts
-│   │   │   └── Connection.ts
-│   │   ├── ai/OpenAIAdapter.ts
-│   │   ├── pdf/PDFGenerator.ts
-│   │   ├── scrapers/UniversityScraper.ts
-│   │   └── auth/NextAuthAdapter.ts
-│   │
-│   ├── presentation/              # UI Layer
-│   │   ├── components/
-│   │   │   ├── ui/               # Base UI (Radix)
-│   │   │   ├── charts/           # D3.js
-│   │   │   │   ├── ROIChart.tsx
-│   │   │   │   ├── ComparisonChart.tsx
-│   │   │   │   └── BreakEvenTimeline.tsx
-│   │   │   └── features/
-│   │   │       ├── university/
-│   │   │       ├── comparison/
-│   │   │       └── auth/
-│   │   └── hooks/
-│   │       ├── useUniversities.ts
-│   │       ├── useComparison.ts
-│   │       └── useAuth.ts
-│   │
-│   └── lib/                      # Shared
-│       ├── di/container.ts
-│       ├── types/global.ts
-│       ├── constants.ts
-│       └── validation.ts
+│   └── src/
+│       ├── index.ts             # Express app entry
+│       ├── domain/              # Enterprise Business Rules (ZERO deps)
+│       │   ├── entities/
+│       │   │   ├── University.ts
+│       │   │   ├── User.ts
+│       │   │   ├── Comparison.ts
+│       │   │   └── Program.ts
+│       │   ├── value-objects/
+│       │   └── types/index.ts
+│       │
+│       ├── application/         # Application Business Rules
+│       │   ├── use-cases/
+│       │   │   ├── CompareUniversities.ts
+│       │   │   ├── GetRecommendations.ts
+│       │   │   ├── CalculateROI.ts
+│       │   │   └── ExportPDF.ts
+│       │   ├── ports/
+│       │   │   ├── IUniversityRepository.ts
+│       │   │   ├── IUserRepository.ts
+│       │   │   └── IAIRecommendationService.ts
+│       │   └── dto/
+│       │
+│       ├── infrastructure/      # External Concerns
+│       │   ├── persistence/mongodb/
+│       │   │   ├── UniversityRepository.ts
+│       │   │   ├── UserRepository.ts
+│       │   │   └── Connection.ts
+│       │   ├── ai/OpenAIAdapter.ts
+│       │   └── pdf/PDFGenerator.ts
+│       │
+│       ├── routes/              # Express Routes
+│       │   ├── universities.ts
+│       │   ├── comparisons.ts
+│       │   ├── auth.ts
+│       │   └── users.ts
+│       │
+│       └── middleware/          # Express Middleware
+│           ├── auth.ts
+│           └── rateLimit.ts
 │
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── e2e/
-│
-└── public/assets/
+└── docs/
 ```
 
 ### Requirements to Structure Mapping
 
-| FR Category | Location |
-|-------------|-----------|
-| University Discovery | `presentation/components/features/university` |
-| AI Recommendations | `application/use-cases/GetRecommendations.ts` |
-| D3.js Visualization | `presentation/components/charts` |
-| User Management | `domain/entities/User.ts` |
-| Admin Data Verification | `application/use-cases/VerifyUniversityData.ts` |
-| PDF Export | `infrastructure/pdf/PDFGenerator.ts` |
-| GDPR Compliance | `domain/entities/User.ts` |
+| FR Category | Frontend Location | Backend Location |
+|-------------|-------------------|-------------------|
+| University Discovery | `presentation/components/features/university` | `server/src/application/use-cases` |
+| AI Recommendations | `presentation/hooks/useRecommendations.ts` | `server/src/application/use-cases/GetRecommendations.ts` |
+| D3.js Visualization | `presentation/components/charts` | — |
+| User Management | `presentation/hooks/useAuth.ts` | `server/src/routes/auth.ts` |
+| Admin Data Verification | — | `server/src/application/use-cases/VerifyUniversityData.ts` |
+| PDF Export | — | `server/src/infrastructure/pdf/PDFGenerator.ts` |
+| GDPR Compliance | — | `server/src/domain/entities/User.ts` |
 
 ### Architectural Boundaries
 
-**Clean Architecture Flow:**
+**Frontend → Backend Communication:**
 ```
-Presentation → Application → Domain ← Infrastructure
-     ↓              ↓           ↑
-   (UI)         (Use Cases)  (External)
+Next.js (port 3000)  ←HTTP→  Express.js (port 3001)  ←→  MongoDB
+     (UI)                  (API + Business Logic)      (Data)
 ```
+
+**Backend Clean Architecture Flow:**
+```
+Routes → Application → Domain ← Infrastructure
+           ↓              ↓           ↑
+       (Use Cases)   (Entities)   (MongoDB)
+```
+
+- Frontend: React components, D3.js charts, React Query hooks
+- Backend: Express routes, Use cases, Domain entities
 - Domain: Zero dependencies, pure TypeScript
-- Application: Use cases, ports (interfaces)
-- Infrastructure: Implements ports, external integrations
-- Presentation: React components, D3.js charts
+- Infrastructure: MongoDB repositories, external services
 
 ## Architecture Validation
 
@@ -438,8 +457,8 @@ Presentation → Application → Domain ← Infrastructure
 
 **✅ Architectural Decisions**
 - [x] Critical decisions documented with versions
-- [x] Technology stack fully specified
-- [x] Integration patterns defined
+- [x] Technology stack fully specified (Next.js + Express)
+- [x] Integration patterns defined (HTTP between frontend/backend)
 - [x] Performance considerations addressed
 
 **✅ Implementation Patterns**
@@ -449,7 +468,7 @@ Presentation → Application → Domain ← Infrastructure
 - [x] Process patterns documented
 
 **✅ Project Structure**
-- [x] Complete directory structure defined
+- [x] Complete directory structure defined (frontend + backend)
 - [x] Component boundaries established
 - [x] Integration points mapped
 - [x] Requirements to structure mapping complete
@@ -475,13 +494,46 @@ Presentation → Application → Domain ← Infrastructure
 **AI Agent Guidelines:**
 - Follow all architectural decisions exactly as documented
 - Use implementation patterns consistently across all components
-- Respect project structure and boundaries
+- Respect project structure and boundaries (frontend/backend separation)
+- Frontend (`outvier/`) calls backend API at `localhost:3001`
 - Refer to this document for all architectural questions
 
-**First Implementation Priority:**
+**Implementation Setup:**
+
+1. **Frontend (Next.js):**
 ```bash
 npx create-next-app@latest outvier \
   --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"
 ```
 
-Then structure folders per Clean Architecture (Domain → Application → Infrastructure → Presentation)
+2. **Backend (Node/Express):**
+```bash
+mkdir server && cd server
+npm init -y
+npm install express mongoose cors dotenv helmet
+npm install -D typescript @types/node @types/express tsx
+npx tsc --init
+```
+
+3. **Run Development:**
+```bash
+# Terminal 1 - Backend (port 3001)
+cd server && npm run dev
+
+# Terminal 2 - Frontend (port 3000)
+cd outvier && npm run dev
+```
+
+**Environment Variables:**
+
+Frontend (`.env.local`):
+```
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
+
+Backend (`.env`):
+```
+PORT=3001
+MONGODB_URI=mongodb+srv://...
+CORS_ORIGIN=http://localhost:3000
+```

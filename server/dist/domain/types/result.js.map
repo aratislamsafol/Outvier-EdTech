@@ -1,0 +1,1 @@
+{"version":3,"file":"result.js","sourceRoot":"","sources":["../../../src/domain/types/result.ts"],"names":[],"mappings":";;;AAKO,MAAM,OAAO,GAAG,CAAe,IAAO,EAAgB,EAAE,CAAC,CAAC;IAC/D,IAAI;IACJ,KAAK,EAAE,IAAI;CACZ,CAAC,CAAC;AAHU,QAAA,OAAO,WAGjB;AAEI,MAAM,OAAO,GAAG,CAAe,KAAQ,EAAgB,EAAE,CAAC,CAAC;IAChE,IAAI,EAAE,IAAI;IACV,KAAK;CACN,CAAC,CAAC;AAHU,QAAA,OAAO,WAGjB"}
