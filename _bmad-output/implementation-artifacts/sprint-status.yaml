@@ -46,33 +46,33 @@ development_status:
   epic-1-retrospective: optional
 
   # Epic 2: University Discovery & Comparison
-  epic-2: in-progress
-  2-1-university-data-model-and-seed-data: review
-  2-2-budget-filter-implementation: ready-for-dev
-  2-3-country-region-filter-implementation: backlog
-  2-4-ranking-tier-filter-implementation: backlog
-  2-5-side-by-side-comparison-view: backlog
+  epic-2: done
+  2-1-university-data-model-and-seed-data: done
+  2-2-budget-filter-implementation: done
+  2-3-country-region-filter-implementation: done
+  2-4-ranking-tier-filter-implementation: done
+  2-5-side-by-side-comparison-view: done
   2-6-university-detail-view: backlog
   2-7-view-tuition-costs: backlog
   2-8-view-hidden-costs: backlog
   epic-2-retrospective: optional
 
   # Epic 3: AI-Powered Recommendations
-  epic-3: backlog
-  3-1-student-profile-input-form: backlog
-  3-2-profile-to-university-matching-algorithm: backlog
+  epic-3: in-progress
+  3-1-student-profile-input-form: done
+  3-2-profile-to-university-matching-algorithm: done
   3-3-alternative-university-suggestions: backlog
-  3-4-roi-calculation-display: backlog
+  3-4-roi-calculation-display: done
   3-5-scholarship-eligible-recommendations: backlog
-  3-6-input-academic-profile: backlog
+  3-6-input-academic-profile: done
   epic-3-retrospective: optional
 
   # Epic 4: Data Visualization
-  epic-4: backlog
-  4-1-d3-js-roi-comparison-chart: backlog
-  4-2-break-even-timeline-visualization: backlog
-  4-3-tuition-vs-salary-comparison: backlog
-  4-4-real-time-chart-updates: backlog
+  epic-4: in-progress
+  4-1-d3-js-roi-comparison-chart: done
+  4-2-break-even-timeline-visualization: done
+  4-3-tuition-vs-salary-comparison: done
+  4-4-real-time-chart-updates: done
   epic-4-retrospective: optional
 
   # Epic 5: User Management
